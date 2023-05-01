@@ -1,7 +1,8 @@
 // creating the subnets
 resource "aws_subnet" "main" {
   count = length(var.cidr_block)
-  cidr_block = var.availability_zones[count.index]
+  cidr_block = var.cidr_block[count.index]
+  availability_zone = var.availability_zones[count.index]
   vpc_id = var.vpc_id
   tags = merge(local.common_tags, { Name = "${var.env}-${var.name}-subnet-${count.index+1}" })
 }
@@ -15,10 +16,7 @@ resource "aws_route_table" "route_table" {
     vpc_peering_connection_id = var.vpc_peering_connection_id
   }
 
-  tags = merge(
-    local.common_tags,
-    { Name = "${var.env}-${var.name}-route_table"}
-  )
+  tags = merge(local.common_tags, { Name = "${var.env}-${var.name}-route_table"})
 }
 
 #// route table association to subnets
