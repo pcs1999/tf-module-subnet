@@ -19,18 +19,18 @@ resource "aws_route_table" "route_table" {
   tags = merge(local.common_tags, { Name = "${var.env}-${var.name}-route_table"})
 }
 
-#// route table association to subnets
+// route table association to subnets
 resource "aws_route_table_association" "association" {
   count = length(aws_subnet.main)
   subnet_id      = aws_subnet.main.*.id[count.index]
   route_table_id = aws_route_table.route_table.id
 }
 
-#// creating a route to igw
-#resource "aws_route" "gw_route" {
-#  count = var.internet_gw ? 1 : 0
-#  route_table_id = aws_route_table.route_table_id
-#  destination_cidr_block    = "0.0.0.0/0"
-#  gateway_id = var.internet_gw_id
-#
-#}
+// creating a route to igw
+resource "aws_route" "gw_route" {
+  count = var.internet_gw ? 1 : 0
+  route_table_id = aws_route_table.route_table.id
+  destination_cidr_block    = "0.0.0.0/0"
+  gateway_id = var.internet_gw_id
+
+}
