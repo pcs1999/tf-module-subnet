@@ -4,7 +4,7 @@ resource "aws_subnet" "main" {
   cidr_block = var.cidr_block[count.index]
   availability_zone = var.availability_zones[count.index]
   vpc_id = var.vpc_id
-  tags = merge(local.common_tags, { Name = "${var.env}-${var.name}-subnet-${count.index+1}" })
+  tags = merge(local.common_tags, { Name = "${var.env}-${var.name}-subnet-${count.index + 1}" })
 }
 
 // creating the routing table
@@ -20,12 +20,12 @@ resource "aws_route_table" "route_table" {
 }
 
 #// route table association to subnets
-#resource "aws_route_table_association" "association" {
-#  count = length(aws_subnet.main)
-#  subnet_id      = aws_subnet.main.*.id[count.index]
-#  route_table_id = aws_route_table.route_table_id
-#}
-#
+resource "aws_route_table_association" "association" {
+  count = length(aws_subnet.main)
+  subnet_id      = aws_subnet.main.*.id[count.index]
+  route_table_id = aws_route_table.route_table.id
+}
+
 #// creating a route to igw
 #resource "aws_route" "gw_route" {
 #  count = var.internet_gw ? 1 : 0
